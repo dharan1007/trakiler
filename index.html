@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="A minimalist black-and-white hypertrophy workout tracker with exact sets, reps, timers, notes, and offline progress storage." />
+  <title>FORM / Aesthetic Training System</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles-1.css" />
+  <link rel="stylesheet" href="styles-2.css" />
+  <link rel="stylesheet" href="styles-3.css" />
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to workout</a>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand-block">
+        <a class="brand" href="#today" data-view-link="today" aria-label="FORM home">
+          <span class="brand-mark" aria-hidden="true">F</span>
+          <span class="brand-copy">
+            <strong>FORM</strong>
+            <small>TRAINING SYSTEM</small>
+          </span>
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Close navigation">×</button>
+      </div>
+
+      <nav class="nav-list" aria-label="App sections">
+        <button class="nav-item active" type="button" data-view="today">
+          <span class="nav-index">01</span><span>Today</span>
+        </button>
+        <button class="nav-item" type="button" data-view="program">
+          <span class="nav-index">02</span><span>Program</span>
+        </button>
+        <button class="nav-item" type="button" data-view="progress">
+          <span class="nav-index">03</span><span>Progress</span>
+        </button>
+        <button class="nav-item" type="button" data-view="guide">
+          <span class="nav-index">04</span><span>Guide</span>
+        </button>
+        <button class="nav-item" type="button" data-view="settings">
+          <span class="nav-index">05</span><span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-status">
+        <div class="status-ring" id="sidebarRing" aria-hidden="true"><span id="sidebarPercent">0%</span></div>
+        <div>
+          <span class="eyebrow">TODAY</span>
+          <strong id="sidebarSets">0 / 0 sets</strong>
+          <small>Quality work only.</small>
+        </div>
+      </div>
+
+      <p class="sidebar-footnote">Built around progressive overload, recoverable volume, controlled range and honest logging.</p>
+    </aside>
+
+    <div class="page-frame">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Open navigation">☰</button>
+        <div class="topbar-date">
+          <span id="currentDayLabel">FRIDAY</span>
+          <strong id="currentDateLabel">31 JUL 2026</strong>
+        </div>
+        <div class="topbar-actions">
+          <button class="text-button" id="exportButton" type="button">Export</button>
+          <button class="icon-button" id="themeButton" type="button" aria-label="Toggle inverted theme" title="Invert interface">◐</button>
+        </div>
+      </header>
+
+      <main id="mainContent" tabindex="-1">
+        <section class="app-view active" id="view-today" data-view-panel="today" aria-labelledby="todayHeading">
+          <div class="day-switcher-wrap">
+            <div class="day-switcher" id="daySwitcher" role="tablist" aria-label="Workout days"></div>
+          </div>
+
+          <section class="workout-hero surface-inverse">
+            <div class="hero-grid-line" aria-hidden="true"></div>
+            <div class="hero-copy">
+              <div class="hero-meta">
+                <span class="pill inverse" id="heroDayNumber">DAY 01</span>
+                <span class="hero-duration" id="heroDuration">~85 MIN</span>
+              </div>
+              <p class="eyebrow light" id="heroFocus">SHOULDER WIDTH / UPPER CHEST / ABS</p>
+              <h1 id="todayHeading">Build the frame.</h1>
+              <p class="hero-description" id="heroDescription">Prioritize side-delt width, stable pressing and progressively loaded abdominal flexion.</p>
+            </div>
+
+            <div class="workout-clock-panel" aria-label="Workout timer">
+              <span class="eyebrow light">SESSION CLOCK</span>
+              <div class="workout-clock" id="workoutClock" aria-live="polite">00:00:00</div>
+              <div class="clock-actions">
+                <button class="button white" id="workoutStartButton" type="button">Start</button>
+                <button class="button ghost-light" id="workoutResetButton" type="button">Reset</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="metric-grid" aria-label="Workout summary">
+            <article class="metric-card">
+              <span class="eyebrow">COMPLETION</span>
+              <div class="metric-row"><strong id="completionMetric">0%</strong><span id="completionFraction">0 / 0</span></div>
+              <div class="progress-track"><span id="completionBar"></span></div>
+            </article>
+            <article class="metric-card">
+              <span class="eyebrow">LOGGED VOLUME</span>
+              <div class="metric-row"><strong id="volumeMetric">0</strong><span id="unitMetric">KG</span></div>
+              <small>Weight × completed repetitions</small>
+            </article>
+            <article class="metric-card rest-card" id="restCard">
+              <span class="eyebrow">REST TIMER</span>
+              <div class="metric-row"><strong id="restMetric">READY</strong><span id="restExercise">—</span></div>
+              <div class="rest-actions">
+                <button class="mini-button" id="restMinusButton" type="button" aria-label="Remove 15 seconds">−15</button>
+                <button class="mini-button" id="restPauseButton" type="button">Pause</button>
+                <button class="mini-button" id="restPlusButton" type="button" aria-label="Add 15 seconds">+15</button>
+              </div>
+            </article>
+            <article class="metric-card">
+              <span class="eyebrow">EFFORT RULE</span>
+              <div class="metric-row"><strong>1–2 RIR</strong><span>COMPOUNDS</span></div>
+              <small>Only final safe isolation sets may reach 0–1 RIR.</small>
+            </article>
+          </section>
+
+          <section class="section-heading-row">
+            <div>
+              <p class="eyebrow">TODAY'S WORK</p>
+              <h2>Exercise sequence</h2>
+            </div>
+            <div class="section-tools">
+              <button class="text-button" id="collapseAllButton" type="button">Collapse all</button>
+              <button class="text-button" id="clearTodayButton" type="button">Clear today</button>
+            </div>
+          </section>
+
+          <section class="exercise-list" id="exerciseList" aria-live="polite"></section>
+
+          <section class="notes-section split-section">
+            <article class="note-card">
+              <div class="section-heading-row compact">
+                <div>
+                  <p class="eyebrow">SESSION NOTES</p>
+                  <h2>Record what matters.</h2>
+                </div>
+                <span class="save-state" id="notesSaveState">Saved locally</span>
+              </div>
+              <label class="sr-only" for="sessionNotes">Session notes</label>
+              <textarea id="sessionNotes" rows="7" placeholder="Performance, pain, exercise substitutions, technique cues, sleep, energy, next-session targets…"></textarea>
+            </article>
+
+            <article class="finish-card surface-inverse">
+              <p class="eyebrow light">END SESSION</p>
+              <h2>Finish only when the log is honest.</h2>
+              <p>Completion records the current date, elapsed time, completed sets and training volume in your local history.</p>
+              <button class="button white full-width" id="finishWorkoutButton" type="button">Complete workout</button>
+              <small id="finishStatus">No completed session recorded today.</small>
+            </article>
+          </section>
+        </section>
+
+        <section class="app-view" id="view-program" data-view-panel="program" aria-labelledby="programHeading">
+          <header class="page-header">
+            <p class="eyebrow">SIX-DAY SPECIALIZATION</p>
+            <h1 id="programHeading">The complete weekly structure.</h1>
+            <p>Priority order: shoulders, back, abs, chest, arms, then lower body. Day seven is recovery rather than hidden extra volume.</p>
+          </header>
+          <section class="program-grid" id="programGrid"></section>
+          <section class="principle-strip surface-inverse">
+            <div><span>01</span><strong>Progress repetitions before load.</strong></div>
+            <div><span>02</span><strong>Keep compounds one to two reps from failure.</strong></div>
+            <div><span>03</span><strong>Deload before fatigue erases performance.</strong></div>
+          </section>
+        </section>
+
+        <section class="app-view" id="view-progress" data-view-panel="progress" aria-labelledby="progressHeading">
+          <header class="page-header">
+            <p class="eyebrow">LOCAL TRAINING HISTORY</p>
+            <h1 id="progressHeading">Measure output, not exhaustion.</h1>
+            <p>All data stays in this browser unless you export it. Weight, repetitions and completed sets determine the volume shown here.</p>
+          </header>
+
+          <section class="progress-summary-grid">
+            <article class="large-stat surface-inverse"><span class="eyebrow light">COMPLETED WORKOUTS</span><strong id="historyWorkoutCount">0</strong><small>Recorded sessions</small></article>
+            <article class="large-stat"><span class="eyebrow">TOTAL SETS</span><strong id="historySetCount">0</strong><small>Completed working sets</small></article>
+            <article class="large-stat"><span class="eyebrow">TOTAL VOLUME</span><strong id="historyVolume">0</strong><small id="historyVolumeUnit">Kilograms logged</small></article>
+            <article class="large-stat"><span class="eyebrow">CURRENT STREAK</span><strong id="historyStreak">0</strong><small>Consecutive program completions</small></article>
+          </section>
+
+          <section class="history-section">
+            <div class="section-heading-row">
+              <div><p class="eyebrow">RECENT SESSIONS</p><h2>Workout history</h2></div>
+              <button class="text-button" id="clearHistoryButton" type="button">Clear history</button>
+            </div>
+            <div class="history-list" id="historyList"></div>
+          </section>
+        </section>
+
+        <section class="app-view" id="view-guide" data-view-panel="guide" aria-labelledby="guideHeading">
+          <header class="page-header narrow">
+            <p class="eyebrow">EXECUTION MANUAL</p>
+            <h1 id="guideHeading">The rules that make the program work.</h1>
+            <p>Use these standards to control fatigue, preserve joint position and make each logged repetition comparable to the last.</p>
+          </header>
+
+          <section class="guide-grid">
+            <article class="guide-card"><span class="guide-number">01</span><h2>Rep quality</h2><p>Lower under control for roughly two seconds. Stabilize the stretched position without bouncing. Drive the concentric with controlled intent.</p></article>
+            <article class="guide-card"><span class="guide-number">02</span><h2>RIR accuracy</h2><p>One RIR means one more clean repetition was available. Stop when the next rep would require a changed path, shortened range or assistance.</p></article>
+            <article class="guide-card"><span class="guide-number">03</span><h2>Rest periods</h2><p>Use 150–210 seconds for demanding compounds, 120 seconds for secondary machine work and 75–120 seconds for isolation movements.</p></article>
+            <article class="guide-card"><span class="guide-number">04</span><h2>Double progression</h2><p>Reach the top of the assigned rep range across every set at the prescribed RIR, then increase load by the smallest practical increment.</p></article>
+            <article class="guide-card"><span class="guide-number">05</span><h2>Volume control</h2><p>If performance falls in two consecutive exposures, remove 20–30% of that muscle's weekly sets. More fatigue is not automatically more stimulus.</p></article>
+            <article class="guide-card"><span class="guide-number">06</span><h2>Deload</h2><p>Every sixth week, halve working sets, retain roughly 80–90% of normal load, leave three to four RIR and remove failure work.</p></article>
+          </section>
+
+          <section class="warning-panel">
+            <div><p class="eyebrow">STOP CONDITIONS</p><h2>Pain is not a progression metric.</h2></div>
+            <p>Stop the session for sharp pain, chest pressure, faintness, unusual shortness of breath, palpitations or neurological symptoms. Seek appropriate medical assessment rather than training through them.</p>
+          </section>
+        </section>
+
+        <section class="app-view" id="view-settings" data-view-panel="settings" aria-labelledby="settingsHeading">
+          <header class="page-header narrow">
+            <p class="eyebrow">APPLICATION CONTROL</p>
+            <h1 id="settingsHeading">Make the tracker fit your training.</h1>
+          </header>
+
+          <section class="settings-panel">
+            <div class="setting-row">
+              <div><strong>Weight unit</strong><small>Changes labels only; existing values are not mathematically converted.</small></div>
+              <div class="segmented-control" role="group" aria-label="Weight unit">
+                <button type="button" data-unit="kg">KG</button><button type="button" data-unit="lb">LB</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <div><strong>Automatic rest timer</strong><small>Start the prescribed rest period when a set is checked.</small></div>
+              <label class="switch"><input type="checkbox" id="autoRestToggle" /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <div><strong>Timer sound</strong><small>Play a brief tone when the rest countdown reaches zero.</small></div>
+              <label class="switch"><input type="checkbox" id="soundToggle" /><span></span></label>
+            </div>
+            <div class="setting-row">
+              <div><strong>Compact exercise cards</strong><small>Reduce vertical spacing for smaller screens or denser logging.</small></div>
+              <label class="switch"><input type="checkbox" id="compactToggle" /><span></span></label>
+            </div>
+            <div class="setting-row danger-row">
+              <div><strong>Erase all local data</strong><small>Deletes workout states, notes, timers, settings and completed-session history.</small></div>
+              <button class="button outline" id="eraseAllButton" type="button">Erase data</button>
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>FORM / 01</span>
+        <p>Training tracker, not medical care. Use exercise substitutions and workloads appropriate to your health, skill and recovery.</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="mobile-overlay" id="mobileOverlay" hidden></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="confirm-dialog" id="confirmDialog">
+    <form method="dialog">
+      <p class="eyebrow" id="confirmEyebrow">CONFIRM ACTION</p>
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmMessage">This action cannot be undone.</p>
+      <div class="dialog-actions">
+        <button class="button outline" value="cancel">Cancel</button>
+        <button class="button black" id="confirmAcceptButton" value="confirm">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app-core.js" defer></script>
+  <script src="app-render.js" defer></script>
+  <script src="app-timers.js" defer></script>
+  <script src="app-progress.js" defer></script>
+</body>
+</html>
