@@ -12,6 +12,10 @@
 ![Frontend](https://img.shields.io/badge/Frontend-Vanilla%20JavaScript-f2c811?style=for-the-badge)
 ![Cloud](https://img.shields.io/badge/Cloud-Optional%20Supabase-3ecf8e?style=for-the-badge)
 ![Cost](https://img.shields.io/badge/Use-Free-2667ff?style=for-the-badge)
+[![Release](https://img.shields.io/github/v/release/dharan1007/trakiler?style=for-the-badge&label=Release)](https://github.com/dharan1007/trakiler/releases/latest)
+[![Verify FORM](https://img.shields.io/github/actions/workflow/status/dharan1007/trakiler/verify.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/dharan1007/trakiler/actions/workflows/verify.yml)
+
+[**Live App**](https://dharan1007.github.io/trakiler/) · [**Latest Release**](https://github.com/dharan1007/trakiler/releases/latest) · [**Distribution**](./DISTRIBUTION.md) · [**Roadmap**](./ROADMAP.md) · [**Research Feedback**](https://github.com/dharan1007/trakiler/issues/1) · [**Cite FORM**](./CITATION.cff)
 
 **No subscription required · no advertising SDK · no wearable required · no location required · no promise of training outcomes**
 
