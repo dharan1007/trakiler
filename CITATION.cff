@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If FORM informs research, teaching, product analysis, or a derivative study, please cite this project and its repository."
+title: "FORM — Training System"
+type: software
+authors:
+  - family-names: "Dharan"
+    given-names: ""
+    alias: "dharan1007"
+    email: "dharan.poduvu@gmail.com"
+repository-code: "https://github.com/dharan1007/trakiler"
+url: "https://dharan1007.github.io/trakiler/"
+abstract: "FORM is an independent research and side-project workout tracking system exploring private-first resistance-training logging, editable programming, progression analytics, exercise intelligence, and transparent decision-support concepts."
+keywords:
+  - workout tracker
+  - resistance training
+  - strength training
+  - hypertrophy
+  - exercise science
+  - sports science
+  - training analytics
+  - self tracking
+  - privacy first
+  - fitness technology
