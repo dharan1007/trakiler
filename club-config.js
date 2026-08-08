@@ -7,13 +7,16 @@ window.FORM_SUPABASE = {
   key: ""
 };
 
-// FORM v4 is intentionally loaded as an additive module so the core workout logger remains
-// independently usable. The stylesheet is safe to load immediately; the decision engine waits
-// until the existing workout/progress modules have initialized.
+// Additive product layers. Keeping these behind the already-loaded config file means the core
+// logger still works independently while every screen receives the same readable typography,
+// decision-support layer and type-ahead exercise assistance.
 (()=>{
-  const css=document.createElement('link');css.rel='stylesheet';css.href='v4.css';document.head.appendChild(css);
+  const loadCss=(href)=>{if(document.querySelector(`link[href="${href}"]`))return;const el=document.createElement('link');el.rel='stylesheet';el.href=href;document.head.appendChild(el)};
+  const loadScript=(src,key)=>{if(window[key]||document.querySelector(`script[src="${src}"]`))return;const el=document.createElement('script');el.src=src;el.defer=true;document.body.appendChild(el)};
+  loadCss('v4.css');
+  loadCss('readability.css');
   window.addEventListener('load',()=>{
-    if(window.FORM_COACH)return;
-    const js=document.createElement('script');js.src='coach-v4.js';js.defer=true;document.body.appendChild(js);
+    loadScript('coach-v4.js','FORM_COACH');
+    loadScript('assist.js','FORM_ASSIST');
   },{once:true});
 })();
