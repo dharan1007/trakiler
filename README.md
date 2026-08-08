@@ -1,256 +1,353 @@
-# Trakiler
+# FORM — Modular Training System
 
-This repository currently contains **two separate experimental artifacts** rather than one unified application:
+FORM is a clean browser-based workout tracker, editable training-template system, exercise-intelligence library and optional social activity club.
 
-1. **FORM — Aesthetic Workout Tracker**: a standalone single-file browser workout tracker in `index.html`.
-2. **VERA — Verified Expert Recurrent Architecture**: an experimental Google Colab notebook in `VERA_OneDay_Colab.ipynb` exploring a verifier-assisted language-model architecture.
+The current application has been rebuilt from the original single-file tracker into separate data, presentation and runtime modules so exercise definitions, programs, ranking logic, Club connectivity and UI code can evolve independently.
 
-There is no package manager, backend service, database, or build system in the current repository.
+The repository also still contains `VERA_OneDay_Colab.ipynb`, an unrelated experimental language-model research notebook. FORM is the deployed browser application.
 
-## Repository structure
+## Live application
+
+GitHub Pages is configured from the repository's `gh-pages` branch.
+
+Production URL:
+
+`https://dharan1007.github.io/trakiler/`
+
+## Product structure
+
+FORM deliberately has four primary surfaces rather than one overloaded dashboard.
+
+### Today
+
+The active workout contains:
+
+- program/day selector
+- session timer
+- set completion percentage
+- completed training volume
+- completed working-set count
+- next-load hint
+- editable load / reps / RIR for each set
+- automatic rest timer
+- exercise information button
+- session notes
+- workout history
+- JSON export
+- native share/clipboard sharing
+
+### Programs
+
+FORM ships with editable templates:
+
+- Aesthetic 6-Day Specialization
+- Upper / Lower 4-Day
+- Full Body 3-Day
+- Push / Pull / Legs 6-Day
+- Aesthetic 5-Day
+- Starter 3-Day
+
+A template can be selected without rewriting the UI. The active day can then be edited directly:
+
+- day name
+- focus
+- exercise selection
+- exercise order
+- sets
+- rep range
+- RIR target
+- rest duration
+
+The "Create custom" action clones the active program so the user can modify their own version without mutating the source template in `data.js`.
+
+## Exercise intelligence
+
+The exercise library in `data.js` currently includes machine, cable, dumbbell and bodyweight options across:
+
+- side / front / rear delts
+- upper and mid chest
+- lats
+- upper back
+- biceps
+- triceps
+- quadriceps
+- hamstrings
+- glutes
+- calves
+- abdominal training
+
+Each exercise definition contains structured fields rather than UI-specific markup:
+
+```js
+{
+  name,
+  category,
+  equipment,
+  score,
+  primary,
+  secondary,
+  benefits,
+  why,
+  cues,
+  reps,
+  rir,
+  rest,
+  load,
+  alternatives,
+  heat
+}
+```
+
+This is why a new exercise can be added to the library without creating a new HTML component.
+
+## The exercise `i` drawer
+
+Every active-workout exercise and library entry exposes an information drawer containing:
+
+- FORM score
+- equipment
+- ranking explanation
+- front/back body heat maps
+- primary/secondary muscle emphasis
+- practical benefits
+- execution cues
+- recommended rep range
+- effort / RIR guidance
+- rest guidance
+- loading logic
+- alternative movements
+- three independent YouTube tutorial searches
+- FORM ranking methodology
+
+### YouTube tutorial strategy
+
+FORM does not copy, host or redistribute exercise creators' video files.
+
+For every exercise it creates three public YouTube search routes:
+
+1. Renaissance Periodization + exercise + technique
+2. Jeff Nippard + exercise + form
+3. Muscle & Strength + exercise + exercise guide
+
+This provides multiple free-to-access discovery routes and remains more resilient than hard-coding a single video ID that can later be deleted, made private or replaced. The links are references to YouTube search results; they are not a claim that the underlying videos are licensed for redistribution.
+
+## FORM exercise score
+
+FORM scores are programming aids, not universal biological rankings.
+
+The score combines qualitative assessment of:
+
+- stability
+- target-muscle tension
+- usable range of motion
+- progression simplicity
+- stimulus-to-fatigue characteristics
+- setup practicality
+- technique repeatability
+- evidence confidence
+
+The reason for each score is shown to the user rather than hiding the number behind an unexplained algorithm.
+
+An exercise that scores slightly lower can still be the better choice for an individual because of anatomy, pain history, equipment availability, preference, skill or a specific training goal.
+
+## Body heat maps
+
+The information drawer generates front and back SVG body maps from each exercise's `heat` object.
+
+Example:
+
+```js
+heat: {
+  sideDelts: 1,
+  frontDelts: 0.2
+}
+```
+
+The renderer converts the relative muscle weights into low / medium / high visual emphasis classes.
+
+The map is intentionally an exercise-emphasis visualization, not an anatomical EMG measurement or medical image.
+
+## Loading and weights
+
+FORM does not invent fixed kilogram prescriptions for unknown users.
+
+Instead it records the user's own completed weight/repetition history and estimates exercise-specific strength with a bounded Epley-style estimated 1RM:
+
+```text
+e1RM = weight × (1 + min(reps, 12) / 30)
+```
+
+A target percentage is then selected from the requested rep range. Lower-repetition ranges receive a higher percentage; higher-repetition ranges receive a lower percentage.
+
+The suggested load is rounded to practical increments and displayed as a next-set hint.
+
+For a new exercise with no personal history, FORM shows the target percentage and asks the lifter to establish a technically valid baseline instead of fabricating an exact weight.
+
+## Effort model
+
+The templates generally use:
+
+- compounds: approximately 1–3 RIR
+- controlled isolation exercises: approximately 1–2 RIR
+- optional very low RIR only where technique and exercise safety remain stable
+
+RIR is editable per set and stored in the workout history.
+
+## Workout persistence
+
+FORM currently uses browser `localStorage` for private workout state and history.
+
+Saved workout records contain:
+
+- program
+- day
+- completion timestamp
+- elapsed session time
+- completed / planned set counts
+- total volume
+- session notes
+- exercise ID
+- exercise name
+- load
+- reps
+- RIR
+
+The Export action downloads the complete local state, history and Club activity as JSON.
+
+## FORM Club
+
+The Club surface ranks daily activity using a transparent capped score rather than a hidden social-feed algorithm.
+
+Current scoring components are:
+
+```text
+score = min(sets, 40) × 4
+      + min(volume / max(bodyweight, 40), 220) × 0.55
+      + min(active_minutes, 180) × 0.55
+      + min(steps / 1000, 25) × 3
+      + log2(min(streak, 365) + 1) × 12
+```
+
+The caps prevent a single extreme input from growing without bound.
+
+The daily table can expose:
+
+- rank
+- display name
+- activity score
+- completed working sets
+- steps
+- active minutes
+- streak
+- total logged training volume
+
+### Local mode
+
+Without a backend, Club works as a private local demonstration and can include the user's current daily activity alongside sample leaderboard entries.
+
+No local-mode activity leaves the browser.
+
+### Global mode
+
+`supabase/schema.sql` contains a dedicated Supabase/Postgres implementation for global FORM Club.
+
+It defines:
+
+- `form_profiles`
+- `form_daily_activity`
+- `form_public_daily_leaderboard`
+- explicit Data API grants
+- RLS on exposed tables
+- owner-only profile/activity policies
+- authenticated leaderboard reads
+- server-side activity-score calculation
+- an authenticated publication trigger that copies only leaderboard-safe fields into the public ranking table
+
+The schema deliberately computes the authoritative score on the server. A client-supplied `activity_score` cannot become the source of truth.
+
+`club-config.js` contains only public client configuration placeholders. Never place a Supabase secret/service-role key in this file.
+
+A dedicated Supabase project must be provisioned and the schema applied before Global mode is enabled.
+
+## Security model for Club
+
+The provided schema follows these principles:
+
+- `user_id` must match `auth.uid()`
+- profile/activity rows are owner-scoped
+- the leaderboard receives a deliberately reduced public projection
+- server-side triggers calculate score
+- privileged publisher code lives in a non-public schema
+- execution is revoked from `PUBLIC`
+- exposed tables have RLS enabled
+- public frontend configuration may contain only a Supabase publishable/anon-compatible client key, never a secret/service-role credential
+
+Anonymous Supabase identities can be used for low-friction pseudonymous Club participation if Anonymous Sign-Ins are enabled for the dedicated project.
+
+## Files
 
 ```text
 trakiler/
+├── index.html                  # FORM application shell
+├── styles.css                 # responsive minimal design system
+├── data.js                    # exercise library + program templates
+├── app.js                     # workout, editor, heat-map and history runtime
+├── club.js                    # local/global Club adapter
+├── club-config.js             # public backend config placeholder
+├── supabase/
+│   └── schema.sql             # optional global Club backend
 ├── .nojekyll
-├── index.html
-├── VERA_OneDay_Colab.ipynb
-└── README.md
+├── README.md
+└── VERA_OneDay_Colab.ipynb    # separate research artifact
 ```
 
-## 1. FORM — Aesthetic Workout Tracker
+The deployment branch contains only the static FORM site files required by GitHub Pages.
 
-`index.html` is a complete self-contained workout application: HTML, CSS and JavaScript are embedded in a single file.
+## Editing exercises
 
-The page is titled:
+Add or modify entries in `data.js` under `FORM_DATA.exercises`.
+
+Program templates reference exercises by stable ID, for example:
+
+```js
+["incline-smith", 4, "6–10", 2, 180]
+```
+
+meaning:
 
 ```text
-FORM — Aesthetic Workout Tracker
+exercise = incline-smith
+sets     = 4
+reps     = 6–10
+RIR      = 2
+rest     = 180 seconds
 ```
 
-and presents itself as a six-day specialization training system.
+## Editing programs
 
-### Implemented training features
+Templates live under `FORM_DATA.templates` and contain day objects with `name`, `focus` and `items`.
 
-The browser application includes:
+The runtime works from these objects rather than hard-coded six-day assumptions, so three-, four-, five- and six-day programs use the same renderer.
 
-- six-day training navigation
-- day-specific exercise programs
-- exercise technique guides
-- set completion checkboxes
-- editable set data
-- session clock
-- per-set rest timer
-- rest-timer adjustment controls
-- completion percentage
-- completed-set count
-- logged training volume
-- session notes
-- completed-workout history summary
-- export/reset controls
-- persistent local browser data
-- responsive mobile layout
+## Deployment
 
-The footer explicitly states that training data is stored only in the browser.
-
-### Program structure
-
-The current program is oriented around aesthetic hypertrophy specialization. Visible day themes include:
-
-1. shoulder width / upper chest / abs
-2. back width / biceps
-3. chest / triceps / side delts / abs
-4. back thickness / rear delts / abs
-5. shoulders / arms / chest top-up
-6. legs / abs
-
-Each exercise record defines:
-
-- exercise name
-- number of work sets
-- rep target
-- effort/RIR target
-- rest duration
-- technique cue
-
-The sixth day intentionally uses leg work without squat/deadlift dependence in the checked-in program.
-
-### Training-state model
-
-The application is client-only. State is managed in browser JavaScript and persisted locally rather than through an account/server.
-
-That has useful privacy/offline properties but also means:
-
-- progress does not automatically sync between devices;
-- clearing browser storage can remove history;
-- there is no server backup;
-- data integrity depends on the browser/device;
-- multiple users on the same browser profile are not isolated by account.
-
-### Run FORM
-
-No installation is required. Open:
+This repository's Pages configuration is legacy branch-based deployment:
 
 ```text
-index.html
+source branch: gh-pages
+path: /
 ```
 
-in a modern browser.
+The production `gh-pages` branch is generated from the static FORM application assets.
 
-For a local HTTP origin instead of `file://`, run:
+## VERA notebook
 
-```bash
-python -m http.server 8000
-```
+`VERA_OneDay_Colab.ipynb` is retained as an independent experimental architecture notebook. Claims written inside an experimental notebook should be treated as hypotheses or intended benchmark goals unless actual reproducible benchmark outputs are present.
 
-and visit:
+VERA is not part of the FORM website runtime.
 
-```text
-http://localhost:8000
-```
+## Health and safety
 
-### Static hosting
+FORM is a training-log and educational system rather than medical guidance.
 
-`.nojekyll` makes the repository suitable for direct static publishing such as GitHub Pages without Jekyll processing.
-
-The tracker can also be served from Cloudflare Pages, Netlify, Vercel static hosting, or any basic web server.
-
-## Health/safety scope
-
-FORM contains exercise guidance but is software, not individualized medical care. The current UI itself instructs users to stop for warning symptoms such as sharp pain, chest pressure, faintness, unusual breathlessness, or neurological symptoms.
-
-Training prescriptions should be adjusted for injury history, medical conditions, experience, equipment and recovery instead of treating the checked-in six-day program as universally appropriate.
-
-## 2. VERA — Verified Expert Recurrent Architecture
-
-`VERA_OneDay_Colab.ipynb` is a research/prototyping notebook, separate from the workout tracker.
-
-The notebook proposes a small verifier-assisted language-model system intended to combine:
-
-- a Mamba-2/state-space-model backbone
-- sparse mixture-of-experts routing
-- domain experts for math, code, logic and language
-- BPE tokenization
-- retrieval through FAISS
-- symbolic verification through SymPy
-- code verification/execution through Python AST/runtime paths
-- logical verification through Z3
-- factual verification against retrieved documents
-- iterative regeneration/refinement when verification fails
-
-### Proposed energy/objective idea
-
-The notebook describes generation using a conceptual objective of the form:
-
-```text
-E(y | x)
- = fluency/model cost
- + λ_math  × mathematical violation cost
- + λ_code  × code violation cost
- + λ_logic × logical violation cost
- + λ_fact  × factual-support violation cost
-```
-
-The practical idea is that verifiable domains should be checked by deterministic or symbolic tools rather than trusted solely because the language model produced a confident answer.
-
-### Notebook configuration
-
-The checked-in configuration includes parameters such as:
-
-- vocabulary size: 32,000
-- model width: 256
-- 8 SSM layers
-- Mamba-2 state size: 64
-- 4 experts
-- top-2 expert routing
-- expert hidden dimension: 512
-- sequence length: 1,024
-- local training target of 20,000 steps
-- FAISS top-k retrieval
-- verifier weights for math/code/logic/facts
-- up to 3 refinement iterations
-
-The notebook targets a Google Colab-style CUDA environment and includes installation commands for packages including `mamba-ssm`, `causal-conv1d`, `tokenizers`, `datasets`, `faiss-cpu`, `sympy`, `z3-solver`, `sentence-transformers`, `accelerate`, and `bitsandbytes`.
-
-### Tokenizer/data path
-
-The notebook proposes training a ByteLevel BPE tokenizer from streamed Wikipedia and GitHub code data and persisting tokenizer/index artifacts to Google Drive.
-
-Because external datasets, package versions and free-Colab hardware limits change over time, the notebook should be treated as an experiment that may require maintenance before it executes end-to-end.
-
-## Important VERA research caveat
-
-The notebook's opening text includes ambitious goals such as beating frontier models on math, code, logic and factual QA. **Those statements are research goals, not verified results in this repository.**
-
-The checked-in notebook cells show `execution_count: null` and no recorded benchmark outputs in the inspected artifact. Therefore this README does not claim that VERA has achieved those benchmark targets.
-
-To make a performance claim credible, the project would need at minimum:
-
-1. reproducible training configuration and exact dependency versions;
-2. fixed evaluation datasets/splits;
-3. contamination controls;
-4. deterministic or statistically reported evaluation runs;
-5. baselines evaluated under comparable conditions;
-6. complete logs/checkpoints;
-7. independent re-runs where possible;
-8. latency, memory, compute and cost reporting in addition to accuracy.
-
-## Architectural research notes
-
-The verifier approach can be useful, but its guarantees are limited by the verifier itself.
-
-Examples:
-
-- SymPy can validate many symbolic relations but not every mathematical proof or natural-language assumption.
-- Running code successfully does not prove semantic correctness or security.
-- Z3 only proves properties that were correctly formalized.
-- Retrieval-backed factual checking only covers claims represented in the retrieved corpus and depends on source quality/retrieval recall.
-- A verifier-driven retry loop can improve correctness while increasing latency and compute.
-
-Accordingly, “verified” should mean “passed the defined checker under stated assumptions,” not “universally correct.”
-
-## Why the two artifacts are kept separate conceptually
-
-FORM and VERA currently share a Git repository but not an application architecture:
-
-| Area | FORM | VERA |
-|---|---|---|
-| Purpose | workout tracking | AI architecture research |
-| Runtime | browser | Google Colab/Python/CUDA |
-| Main file | `index.html` | `VERA_OneDay_Colab.ipynb` |
-| Persistence | browser-local | Google Drive/notebook artifacts |
-| Build | none | notebook dependency install |
-| Backend | none | notebook/runtime services only |
-
-If both projects continue growing, splitting them into separate repositories would improve release history, issue tracking, documentation and dependency management.
-
-## Current status
-
-- FORM is immediately runnable as a static browser app.
-- FORM has no cloud account/sync backend in this repository.
-- VERA is an experimental notebook/proposal with implementation cells.
-- VERA's headline benchmark target is not established by stored result outputs in the checked-in notebook.
-- The repository currently has no automated test suite or CI workflow.
-
-## Suggested next steps
-
-### FORM
-
-- extract CSS and JavaScript from the monolithic HTML if development continues;
-- add unit tests for timer/state/export calculations;
-- version persisted browser data and provide import/export recovery;
-- support `prefers-reduced-motion` and accessibility auditing;
-- decide whether cross-device sync is actually desired before adding accounts/backend complexity.
-
-### VERA
-
-- pin dependency versions and CUDA/PyTorch compatibility;
-- run a minimal smoke-test configuration first;
-- separate training, retrieval, verification and evaluation modules from notebook cells;
-- add benchmark scripts with raw result exports;
-- distinguish verifier pass rate from benchmark accuracy;
-- compare against appropriately sized open baselines as well as frontier APIs;
-- report compute/time/cost honestly.
-
-## License
-
-No explicit root license file was present before this README. Add separate licensing terms if the workout application and research notebook are intended for public reuse.
+Stop exercise and obtain appropriate assessment for symptoms such as sharp pain, chest pressure, fainting, unusual breathlessness, acute neurological symptoms or an obvious injury. Exercise selection, range of motion and training load should be adapted to the individual rather than forced to match a generic template.
