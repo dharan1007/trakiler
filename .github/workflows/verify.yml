@@ -23,6 +23,8 @@ jobs:
           node --check club.js
           node --check app.js
           node --check insights.js
+          node --check coach-v4.js
+          node --check club-config.js
       - name: Verify application surfaces and legal pages
         run: |
           grep -q 'data-page="progress"' index.html
@@ -31,18 +33,25 @@ jobs:
           grep -q 'Privacy Policy' privacy.html
           grep -q 'Terms of Use' terms.html
           grep -q 'SPDX-License-Identifier: Unlicense' LICENSE
+          grep -q 'FORM Decision Engine' coach-v4.js
+          grep -q 'Session Rescue' coach-v4.js
+          grep -q 'Plateau Doctor' coach-v4.js
       - name: Verify private-first backend rules are present
         run: |
           grep -q 'alter table public.form_workouts enable row level security' supabase/schema.sql
           grep -q 'alter table public.form_measurements enable row level security' supabase/schema.sql
           grep -q 'club_public boolean not null default false' supabase/schema.sql
           grep -q 'form_public_daily_leaderboard' supabase/schema.sql
+          grep -q 'alter table public.form_readiness_logs enable row level security' supabase/v4_coach.sql
+          grep -q 'alter table public.form_coach_preferences enable row level security' supabase/v4_coach.sql
+          grep -q 'syncReadiness' backend.js
+          grep -q 'syncCoachPreferences' backend.js
           if grep -n 'SUPABASE_SERVICE_ROLE_KEY' ./*.js ./*.html 2>/dev/null; then
             echo 'A service-role credential name must never appear in browser-delivered assets.'
             exit 1
           fi
-      - name: Verify no missing local assets referenced by index
+      - name: Verify required local assets
         run: |
-          for f in styles.css v3.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js privacy.html terms.html; do
+          for f in styles.css v3.css v4.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js coach-v4.js privacy.html terms.html supabase/v4_coach.sql; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
