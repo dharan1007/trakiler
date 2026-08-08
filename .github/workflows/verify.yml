@@ -24,6 +24,7 @@ jobs:
           node --check app.js
           node --check insights.js
           node --check coach-v4.js
+          node --check assist.js
           node --check club-config.js
       - name: Verify application surfaces and legal pages
         run: |
@@ -36,6 +37,9 @@ jobs:
           grep -q 'FORM Decision Engine' coach-v4.js
           grep -q 'Session Rescue' coach-v4.js
           grep -q 'Plateau Doctor' coach-v4.js
+          grep -q 'readability.css' club-config.js
+          grep -q 'assist.js' club-config.js
+          grep -q 'Search exercise, muscle' assist.js
       - name: Verify private-first backend rules are present
         run: |
           grep -q 'alter table public.form_workouts enable row level security' supabase/schema.sql
@@ -52,6 +56,6 @@ jobs:
           fi
       - name: Verify required local assets
         run: |
-          for f in styles.css v3.css v4.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js coach-v4.js privacy.html terms.html supabase/v4_coach.sql; do
+          for f in styles.css v3.css v4.css readability.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js coach-v4.js assist.js privacy.html terms.html supabase/v4_coach.sql; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
