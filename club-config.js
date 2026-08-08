@@ -1,7 +1,7 @@
-// FORM Club backend configuration.
-// Leave empty for private/local-only mode.
-// When a dedicated Supabase project is provisioned, fill these with that project's
-// public URL and publishable key. Never place a secret/service-role key here.
+// FORM public backend configuration.
+// Fill these only after a dedicated FORM Supabase project has been created and secured.
+// The browser may contain a Supabase project URL and publishable/anon-compatible key.
+// NEVER place service-role or other secret server credentials in this file.
 window.FORM_SUPABASE = {
   url: "",
   key: ""
