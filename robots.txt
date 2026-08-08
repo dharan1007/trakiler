@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dharan1007.github.io/trakiler/sitemap.xml
