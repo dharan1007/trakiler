@@ -17,8 +17,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Add release and discovery surfaces to README header
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           from pathlib import Path
 
           path = Path('README.md')
@@ -40,6 +41,7 @@ jobs:
 [**Live App**](https://dharan1007.github.io/trakiler/) · [**Latest Release**](https://github.com/dharan1007/trakiler/releases/latest) · [**Distribution**](./DISTRIBUTION.md) · [**Roadmap**](./ROADMAP.md) · [**Research Feedback**](https://github.com/dharan1007/trakiler/issues/1) · [**Cite FORM**](./CITATION.cff)
 '''
           path.write_text(text.replace(marker, block, 1), encoding='utf-8')
+          PY
 
       - name: Commit README discovery header when changed
         shell: bash
