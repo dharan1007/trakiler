@@ -17,15 +17,7 @@ FORM deliberately uses six simple surfaces instead of putting every metric on th
 
 ## Workout logging
 
-Each working set can record:
-
-- weight
-- repetitions
-- RIR
-- completion state
-- prescribed rest period
-
-Completing a set can start the rest timer automatically. Session history stores elapsed time, total/completed sets, total volume, notes and individual set data.
+Each working set can record weight, repetitions, RIR, completion state and prescribed rest. Completing a set can start the rest timer automatically. Session history stores elapsed time, total/completed sets, total volume, notes and individual set data.
 
 ### Load guidance
 
@@ -35,13 +27,13 @@ FORM does not invent a universal kg recommendation. When previous set history is
 e1RM = weight × (1 + min(reps, 12) / 30)
 ```
 
-The next-load hint is then derived from the user's own prior performance and current target rep range. It is a training estimate, not a tested 1RM.
+The next-load hint is derived from the user's own prior performance and current target rep range. It is a training estimate, not a tested 1RM.
 
 ## Progress analytics
 
-The Progress surface adds the tracker features missing from the original single-page version:
+The Progress surface includes:
 
-- current-week adherence against the user's chosen training frequency
+- current-week adherence against the chosen training frequency
 - weekly consistency streak and best streak
 - personal records by exercise-specific estimated 1RM
 - new-PR detection from the latest completed session
@@ -57,7 +49,7 @@ Muscle workload intentionally uses a transparent approximation: primary muscles 
 
 ## Programs
 
-FORM includes the original editable templates plus a goal-aware v3 layer. Current program families include:
+Current program families include:
 
 - Full Body 2-Day Minimum Effective
 - Starter 3-Day Full Body
@@ -71,51 +63,19 @@ FORM includes the original editable templates plus a goal-aware v3 layer. Curren
 - Aesthetic 6-Day Specialization
 - Push / Pull / Legs 6-Day
 
-Program matching considers:
-
-- primary goal: general fitness, muscle gain, strength or recomposition
-- experience: beginner, intermediate or advanced
-- available training days
-- approximate session duration
-
-Templates remain editable. The matcher is a starting-point heuristic, not a medical or individualized coaching prescription.
+Program matching considers primary goal, experience, available training days and approximate session duration. Templates remain editable. The matcher is a starting-point heuristic, not a medical or individualized coaching prescription.
 
 ## Exercise intelligence
 
-`data.js` contains the structured exercise library. Exercise objects can include:
-
-- category
-- primary and secondary muscles
-- equipment
-- FORM score
-- score rationale
-- hypertrophy/strength/programming benefits
-- execution cues
-- rep range
-- target RIR
-- rest duration
-- load guidance
-- alternative exercises
-- body-map heat information
-- three YouTube search routes for independent technique demonstrations
+`data.js` contains the structured exercise library. Exercise objects can include category, muscles, equipment, FORM score/rationale, benefits, execution cues, rep range, RIR, rest, load guidance, alternatives, body-map heat information and three YouTube search routes for independent technique demonstrations.
 
 YouTube links open public search results. FORM does not copy, host or redistribute creators' videos.
 
 ## FORM Club
 
-Club has two explicit modes:
-
 ### Real backend mode
 
-When a dedicated Supabase backend is configured, authenticated users can opt in to a public Club profile and publish a daily aggregate. The public projection can expose:
-
-- display name
-- daily FORM score
-- completed sets
-- manually entered steps
-- manually entered active minutes
-- streak
-- total workout volume
+When a dedicated Supabase backend is configured, authenticated users can opt in to a public Club profile and publish a daily aggregate. The public projection can expose display name, daily FORM score, completed sets, manually entered steps, manually entered active minutes, streak and total workout volume.
 
 Exact bodyweight, body measurements, email, workout notes and private set history are not part of the public leaderboard table.
 
@@ -142,31 +102,19 @@ browser
        └─ form_public_daily_leaderboard
 ```
 
-`supabase/schema.sql` contains the database definition and RLS policies.
-
-Private tables use authenticated-user ownership policies. Club scoring is recalculated in PostgreSQL rather than trusting a score sent by the browser. The public leaderboard is a reduced projection separate from the user's private activity record.
+`supabase/schema.sql` contains the database definition and RLS policies. Private tables use authenticated-user ownership policies. Club scoring is recalculated in PostgreSQL rather than trusting a score sent by the browser. The public leaderboard is a reduced projection separate from the user's private activity record.
 
 ### Account deletion
 
-`supabase/functions/delete-account/index.ts` implements the server-side deletion operation. It validates the bearer session, requires an explicit destructive confirmation string and uses the server-only service credential to delete the authenticated identity. FORM-owned tables reference `auth.users` with cascading deletion.
+`supabase/functions/delete-account/index.ts` implements server-side deletion. It validates the bearer session, requires an explicit destructive confirmation string and uses the server-only service credential to delete the authenticated identity. FORM-owned tables reference `auth.users` with cascading deletion.
 
-Never place a Supabase service-role/secret key in `club-config.js`, `backend.js`, HTML or any other browser-delivered file.
+Never place a Supabase service-role/secret key in browser-delivered files.
 
 ## Local-first privacy model
 
 The application works without a cloud account. Local data stays in the browser until the user deletes it, clears site storage or opts into a configured cloud-backed feature.
 
-The current interface includes:
-
-- onboarding with minimal training-profile fields
-- optional anonymous cloud identity
-- optional email magic-link recovery
-- opt-in public Club profile
-- full local/cloud JSON export
-- separate local data deletion
-- cloud account deletion
-- Privacy Policy
-- Terms of Use
+The interface includes onboarding with minimal profile fields, optional anonymous cloud identity, optional email magic-link recovery, opt-in public Club profile, local/cloud JSON export, separate local deletion, cloud account deletion, Privacy Policy and Terms of Use.
 
 See [`privacy.html`](./privacy.html) and [`terms.html`](./terms.html).
 
@@ -176,13 +124,13 @@ A dedicated FORM Supabase project is recommended; do not mix this hobby applicat
 
 1. Create a dedicated project.
 2. Apply `supabase/schema.sql`.
-3. Enable Anonymous Sign-Ins if pseudonymous account creation is desired.
+3. Enable Anonymous Sign-Ins if pseudonymous accounts are desired.
 4. Deploy `supabase/functions/delete-account/index.ts` with JWT verification enabled.
 5. Run Supabase security/performance advisors and resolve applicable findings.
-6. Put only the project URL and **publishable/anon-compatible public key** in `club-config.js`.
+6. Put only the project URL and public publishable/anon-compatible key in `club-config.js`.
 7. Never commit the service-role key.
 
-Example browser config:
+Example:
 
 ```js
 window.FORM_SUPABASE = {
@@ -191,7 +139,7 @@ window.FORM_SUPABASE = {
 };
 ```
 
-Without this configuration the app remains functional in local-first mode and Club clearly reports that global publishing is unavailable.
+Without this configuration the app remains functional in local-first mode and Club clearly reports that global publishing is unavailable. The repository contains a complete backend implementation, but **the live GitHub Pages deployment is not a real global backend until `club-config.js` is connected to a dedicated Supabase project and the SQL/function are deployed there.**
 
 ## Files
 
@@ -212,9 +160,7 @@ trakiler/
 ├── LICENSE
 ├── supabase/
 │   ├── schema.sql
-│   └── functions/
-│       └── delete-account/
-│           └── index.ts
+│   └── functions/delete-account/index.ts
 ├── .github/workflows/verify.yml
 └── VERA_OneDay_Colab.ipynb
 ```
@@ -223,18 +169,11 @@ trakiler/
 
 ## Verification
 
-The GitHub Actions workflow checks:
-
-- JavaScript syntax for every browser module
-- presence of Progress, Profile and onboarding surfaces
-- legal pages and license marker
-- key private-first/RLS schema elements
-- absence of a service-role credential name in browser-delivered assets
-- presence of all local runtime assets referenced by the application
+The GitHub Actions workflow checks JavaScript syntax, required UI/legal surfaces, key RLS/privacy schema elements, browser-secret leakage and the existence of all local runtime assets.
 
 ## Deployment
 
-The repository currently uses legacy GitHub Pages branch deployment. The production bundle is published from the root of `gh-pages`.
+The repository uses legacy GitHub Pages branch deployment. The production static bundle is published from the root of `gh-pages`.
 
 ## License
 
