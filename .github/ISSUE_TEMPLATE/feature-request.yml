@@ -1,0 +1,54 @@
+name: Feature request
+description: Propose a concrete improvement to FORM's public product experience.
+title: "[Feature]: "
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user problem before describing the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the user flow, inputs, outputs and where it belongs in FORM.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Primary surface
+      options:
+        - Today
+        - Programs
+        - Progress
+        - Exercises
+        - Decision Support
+        - Club
+        - Profile / Privacy
+        - Distribution / GitHub / Docs
+        - New surface
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data / privacy implications
+      description: What new data would be collected, stored, derived or made public? Say "none" if none.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or comparable products
+      description: Optional research, product references or examples that support the need.
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: This request does not require FORM to make medical diagnoses or guarantee training outcomes.
+          required: true
