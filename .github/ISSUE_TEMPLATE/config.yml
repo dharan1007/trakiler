@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Try FORM live
+    url: https://dharan1007.github.io/trakiler/
+    about: Open the current GitHub Pages build before filing a report.
+  - name: Security and privacy reporting
+    url: https://github.com/dharan1007/trakiler/blob/main/SECURITY.md
+    about: Use the private reporting guidance for security or privacy vulnerabilities.
+  - name: Support and research contact
+    url: https://github.com/dharan1007/trakiler/blob/main/SUPPORT.md
+    about: Read the support and evidence-feedback guidelines.
