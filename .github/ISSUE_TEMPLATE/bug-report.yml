@@ -1,0 +1,68 @@
+name: Bug report
+description: Report a reproducible FORM software or interface problem.
+title: "[Bug]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve FORM. Do not include passwords, auth tokens, private medical information or other sensitive personal data.
+  - type: input
+    id: surface
+    attributes:
+      label: FORM surface
+      description: Which screen or feature is affected?
+      placeholder: Today, Programs, Progress, Exercises, Decision Support, Club, Profile, export, sync...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest repeatable sequence that triggers the problem.
+      placeholder: "1. Open ...\n2. Select ...\n3. Enter ...\n4. Observe ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser / OS / device
+      placeholder: Chrome 151 / Windows 11 / desktop
+    validations:
+      required: true
+  - type: dropdown
+    id: storage
+    attributes:
+      label: Data mode
+      options:
+        - Local-only / no cloud backend
+        - Cloud backend configured
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional non-sensitive context
+      description: Console errors, screenshots or notes. Redact personal data.
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I removed secrets and sensitive personal/medical data from this report.
+          required: true
+        - label: I understand FORM is a research/side project and not a medical service.
+          required: true
