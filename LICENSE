@@ -1,15 +1,23 @@
-FORM — PUBLIC-DOMAIN / UNLICENSE INTENT
+FORM — CURRENT SOURCE AND PROJECT NOTICE
 
-SPDX-License-Identifier: Unlicense
+Copyright (c) 2026 Dharan. All rights reserved except where an individual file or third-party component states a different license.
 
-To the fullest extent permitted by applicable law, the author dedicates the original FORM source code in this repository to the public domain and waives copyright and related rights in that code.
+CURRENT AND FUTURE MATERIAL
 
-You may use, copy, modify, publish, distribute, sublicense, compile, sell, or otherwise reuse the original FORM source code for any purpose, commercial or non-commercial, without asking permission and without an attribution requirement.
+Unless an explicit license in a file says otherwise, no permission is granted to copy, redistribute, sublicense, sell, commercialize, or create derivative works from current or future proprietary FORM source code, algorithms, recommendation/scoring logic, backend implementation, database schemas, internal APIs, private research material, unpublished architecture, or other internal implementation material.
 
-Where a public-domain dedication is not legally effective, the author grants an irrevocable, worldwide, royalty-free permission to exercise those same rights to the fullest extent the law permits.
+The public repository may be viewed and forked through GitHub to the extent permitted by GitHub's Terms of Service. Publication of a file on GitHub does not, by itself, grant additional open-source rights beyond an explicit license applicable to that file.
 
-The software is provided without warranty. Use it at your own risk.
+The live FORM site is provided for personal evaluation, research/educational exploration and normal end-user use subject to the project's Terms of Use and Privacy Policy. No license is granted to misrepresent the project, its name, results or documentation as an endorsement, medical device, certified coaching product, clinical system, or guarantee of outcomes.
 
-This notice applies only to original source code covered by this repository. It does not grant rights to third-party names, trademarks, videos, websites, APIs, datasets, libraries, package-CDN content, or other third-party material referenced or used by FORM.
+HISTORICAL LICENSE NOTICE
 
-The intended standard license is The Unlicense (SPDX: Unlicense), an OSI-approved license. Canonical reference: https://opensource.org/license/unlicense
+Earlier revisions of this repository were expressly released under The Unlicense / public-domain intent. This current notice does not attempt to retroactively revoke rights that were validly granted to recipients of those historical revisions under their then-applicable terms. Historical copies, forks or revisions may therefore have different licensing rights from current/future proprietary material.
+
+THIRD-PARTY MATERIAL
+
+This notice does not change or override the licenses or terms of third-party libraries, APIs, services, package-CDN content, websites, videos, research publications, datasets or other third-party material referenced or used by FORM. Those materials remain governed by their respective owners and licenses.
+
+NO WARRANTY
+
+FORM is an independent research/side project and is provided on an "as is" and "as available" basis, without warranties of accuracy, completeness, fitness for a particular purpose, safety for every person, uninterrupted availability, or training outcomes, to the maximum extent permitted by applicable law. See terms.html for the user-facing Terms of Use.
