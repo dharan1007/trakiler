@@ -1,0 +1,104 @@
+name: Publish FORM Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'VERSION'
+      - 'RELEASE_NOTES.md'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: form-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build curated public artifact and publish release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          test -n "$VERSION"
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Validate public runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            index.html privacy.html terms.html .nojekyll
+            styles.css v3.css v4.css readability.css
+            data.js programs-v3.js club-config.js backend.js club.js
+            app.js insights.js coach-v4.js assist.js project-notice.js
+          )
+          for file in "${files[@]}"; do
+            test -f "$file" || { echo "Missing runtime file: $file"; exit 1; }
+          done
+          node --check data.js
+          node --check programs-v3.js
+          node --check backend.js
+          node --check club.js
+          node --check app.js
+          node --check insights.js
+          node --check coach-v4.js
+          node --check assist.js
+          node --check project-notice.js
+
+      - name: Build curated public web artifacts
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.value }}"
+          ROOT="FORM-public-web-v${VERSION}"
+          mkdir -p "dist/$ROOT"
+          files=(
+            index.html privacy.html terms.html .nojekyll
+            styles.css v3.css v4.css readability.css
+            data.js programs-v3.js club-config.js backend.js club.js
+            app.js insights.js coach-v4.js assist.js project-notice.js
+          )
+          cp "${files[@]}" "dist/$ROOT/"
+          cp README.md "dist/$ROOT/README-GITHUB.md"
+          cp SECURITY.md "dist/$ROOT/SECURITY.md"
+          cp LICENSE "dist/$ROOT/LICENSE"
+          printf '%s\n' "$VERSION" > "dist/$ROOT/VERSION"
+          (cd dist && zip -qr "${ROOT}.zip" "$ROOT")
+          tar -C dist -czf "dist/${ROOT}.tar.gz" "$ROOT"
+          (cd dist && sha256sum "${ROOT}.zip" "${ROOT}.tar.gz" > SHA256SUMS.txt)
+          echo "zip=dist/${ROOT}.zip" >> "$GITHUB_OUTPUT"
+          echo "tar=dist/${ROOT}.tar.gz" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub Release if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.value }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; leaving it unchanged."
+            exit 0
+          fi
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "FORM v${VERSION} — Public Research Preview" \
+            --notes-file RELEASE_NOTES.md \
+            --latest \
+            "${{ steps.artifact.outputs.zip }}" \
+            "${{ steps.artifact.outputs.tar }}" \
+            "dist/SHA256SUMS.txt"
