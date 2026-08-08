@@ -1,0 +1,55 @@
+name: Add FORM README Discovery Links
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/readme-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add release and discovery surfaces to README header
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('README.md')
+          text = path.read_text(encoding='utf-8')
+          marker = '![Cost](https://img.shields.io/badge/Use-Free-2667ff?style=for-the-badge)\n'
+          sentinel = 'https://img.shields.io/github/v/release/dharan1007/trakiler'
+
+          if sentinel in text:
+              print('README discovery header already present.')
+              raise SystemExit(0)
+
+          if marker not in text:
+              raise SystemExit('Expected README header marker was not found; refusing to patch.')
+
+          block = '''![Cost](https://img.shields.io/badge/Use-Free-2667ff?style=for-the-badge)
+[![Release](https://img.shields.io/github/v/release/dharan1007/trakiler?style=for-the-badge&label=Release)](https://github.com/dharan1007/trakiler/releases/latest)
+[![Verify FORM](https://img.shields.io/github/actions/workflow/status/dharan1007/trakiler/verify.yml?branch=main&style=for-the-badge&label=Build)](https://github.com/dharan1007/trakiler/actions/workflows/verify.yml)
+
+[**Live App**](https://dharan1007.github.io/trakiler/) · [**Latest Release**](https://github.com/dharan1007/trakiler/releases/latest) · [**Distribution**](./DISTRIBUTION.md) · [**Roadmap**](./ROADMAP.md) · [**Research Feedback**](https://github.com/dharan1007/trakiler/issues/1) · [**Cite FORM**](./CITATION.cff)
+'''
+          path.write_text(text.replace(marker, block, 1), encoding='utf-8')
+
+      - name: Commit README discovery header when changed
+        shell: bash
+        run: |
+          if git diff --quiet -- README.md; then
+            echo 'No README change needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m 'Surface FORM releases and research links'
+          git push
