@@ -26,20 +26,27 @@ jobs:
           node --check coach-v4.js
           node --check assist.js
           node --check club-config.js
-      - name: Verify application surfaces and legal pages
+          node --check project-notice.js
+      - name: Verify application surfaces and public policy pages
         run: |
           grep -q 'data-page="progress"' index.html
           grep -q 'data-page="profile"' index.html
           grep -q 'id="onboardModal"' index.html
           grep -q 'Privacy Policy' privacy.html
           grep -q 'Terms of Use' terms.html
-          grep -q 'SPDX-License-Identifier: Unlicense' LICENSE
+          grep -q 'CURRENT SOURCE AND PROJECT NOTICE' LICENSE
+          grep -q 'HISTORICAL LICENSE NOTICE' LICENSE
           grep -q 'FORM Decision Engine' coach-v4.js
           grep -q 'Session Rescue' coach-v4.js
           grep -q 'Plateau Doctor' coach-v4.js
           grep -q 'readability.css' club-config.js
           grep -q 'assist.js' club-config.js
+          grep -q 'project-notice.js' club-config.js
+          grep -q 'independent research and side project' project-notice.js
           grep -q 'Search exercise, muscle' assist.js
+          grep -q 'Accuracy and validation status' README.md
+          grep -q 'Public vs private project boundary' README.md
+          grep -q 'Browser-delivered code is not secret' SECURITY.md
       - name: Verify private-first backend rules are present
         run: |
           grep -q 'alter table public.form_workouts enable row level security' supabase/schema.sql
@@ -56,6 +63,6 @@ jobs:
           fi
       - name: Verify required local assets
         run: |
-          for f in styles.css v3.css v4.css readability.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js coach-v4.js assist.js privacy.html terms.html supabase/v4_coach.sql; do
+          for f in styles.css v3.css v4.css readability.css data.js programs-v3.js club-config.js backend.js club.js app.js insights.js coach-v4.js assist.js project-notice.js privacy.html terms.html README.md SECURITY.md LICENSE supabase/v4_coach.sql; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
