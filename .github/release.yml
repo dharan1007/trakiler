@@ -1,0 +1,33 @@
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+    authors:
+      - dependabot
+  categories:
+    - title: Product features
+      labels:
+        - feature
+        - enhancement
+    - title: Research and validation
+      labels:
+        - research
+        - validation
+        - science
+    - title: Security and privacy
+      labels:
+        - security
+        - privacy
+    - title: Fixes and reliability
+      labels:
+        - bug
+        - fix
+        - reliability
+    - title: Documentation and developer experience
+      labels:
+        - documentation
+        - docs
+        - developer-experience
+    - title: Other changes
+      labels:
+        - "*"
