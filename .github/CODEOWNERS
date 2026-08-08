@@ -1,0 +1,22 @@
+# FORM public repository ownership map.
+# CODEOWNERS documents review ownership. It does not make files private by itself.
+
+* @dharan1007
+
+# Core training/runtime implementation
+/app.js @dharan1007
+/data.js @dharan1007
+/programs-v3.js @dharan1007
+/insights.js @dharan1007
+/coach-v4.js @dharan1007
+/club.js @dharan1007
+/backend.js @dharan1007
+
+# Backend/schema/research material scheduled for migration to private source
+/supabase/ @dharan1007
+/VERA_OneDay_Colab.ipynb @dharan1007
+
+# Legal/security/public release controls
+/SECURITY.md @dharan1007
+/LICENSE @dharan1007
+/.github/workflows/ @dharan1007
