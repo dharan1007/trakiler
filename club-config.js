@@ -7,16 +7,17 @@ window.FORM_SUPABASE = {
   key: ""
 };
 
-// Additive product layers. Keeping these behind the already-loaded config file means the core
-// logger still works independently while every screen receives the same readable typography,
-// decision-support layer and type-ahead exercise assistance.
+// Additive public product layers. Keeping these behind the already-loaded config file means the
+// core logger still works independently while every screen receives the same readable typography,
+// decision-support layer, exercise assistance and research/side-project notice.
 (()=>{
   const loadCss=(href)=>{if(document.querySelector(`link[href="${href}"]`))return;const el=document.createElement('link');el.rel='stylesheet';el.href=href;document.head.appendChild(el)};
-  const loadScript=(src,key)=>{if(window[key]||document.querySelector(`script[src="${src}"]`))return;const el=document.createElement('script');el.src=src;el.defer=true;document.body.appendChild(el)};
+  const loadScript=(src,key)=>{if((key&&window[key])||document.querySelector(`script[src="${src}"]`))return;const el=document.createElement('script');el.src=src;el.defer=true;document.body.appendChild(el)};
   loadCss('v4.css');
   loadCss('readability.css');
   window.addEventListener('load',()=>{
     loadScript('coach-v4.js','FORM_COACH');
     loadScript('assist.js','FORM_ASSIST');
+    loadScript('project-notice.js');
   },{once:true});
 })();
