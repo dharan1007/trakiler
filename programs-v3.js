@@ -1,0 +1,40 @@
+(()=> {
+  const D = window.FORM_DATA;
+  if (!D) return;
+  const extra = [
+    {id:"minimum2",name:"Full Body 2-Day Minimum Effective",level:"Beginner / busy",daysPerWeek:2,goal:"Build strength and muscle with two efficient full-body sessions and conservative fatigue.",goalTags:["general","muscle","recomp"],experienceTags:["beginner","intermediate"],durationMin:55,recovery:"high",days:[
+      {name:"Full A",focus:"Quads / chest / lats / delts / hamstrings",items:[["leg-press",3,"6–10",2,180],["incline-machine",3,"6–10",2,150],["lat-pulldown-neutral",3,"6–10",2,150],["seated-curl",2,"8–12",2,90],["machine-lateral",2,"12–20",2,75],["cable-crunch",2,"8–15",2,75]]},
+      {name:"Full B",focus:"Quads / upper back / chest / arms / calves",items:[["hack-squat",3,"6–10",2,180],["chest-row",3,"6–10",2,150],["converging-press",3,"8–12",2,150],["lying-curl",2,"8–12",2,90],["cable-preacher",2,"8–15",2,75],["overhead-triceps",2,"8–15",2,75],["calf-raise",2,"8–15",2,75]]}
+    ]},
+    {id:"hypertrophy4v3",name:"Hypertrophy 4-Day Upper / Lower",level:"Beginner / intermediate",daysPerWeek:4,goal:"Balanced muscle gain with most muscles trained twice weekly and enough recovery between repeated exposures.",goalTags:["muscle","recomp"],experienceTags:["beginner","intermediate","advanced"],durationMin:70,recovery:"medium",days:[
+      {name:"Upper 1",focus:"Upper chest / lats / delts / arms",items:[["incline-smith",3,"6–10",2,180],["lat-pulldown-neutral",3,"6–10",2,150],["chest-row",3,"8–12",2,150],["cable-lateral-behind",3,"12–20",1,75],["cable-preacher",2,"8–15",1,75],["overhead-triceps",2,"8–15",1,75]]},
+      {name:"Lower 1",focus:"Quads / hamstrings / calves / abs",items:[["hack-squat",3,"6–10",2,180],["seated-curl",3,"8–15",1,90],["leg-extension",2,"10–18",1,75],["calf-raise",3,"8–15",1,75],["cable-crunch",3,"8–15",1,75]]},
+      {name:"Upper 2",focus:"Upper back / chest / rear delts / arms",items:[["tbar-supported",3,"6–10",2,150],["incline-machine",3,"8–12",2,150],["one-arm-pulldown",2,"10–15",1,90],["reverse-pec-deck",3,"12–20",1,75],["machine-lateral",3,"12–20",1,75],["bayesian-curl",2,"10–15",1,75],["pressdown",2,"10–15",1,60]]},
+      {name:"Lower 2",focus:"Quads / glutes / hamstrings / calves",items:[["leg-press",3,"8–15",2,180],["split-squat",2,"8–12",2,120],["lying-curl",3,"10–15",1,90],["leg-extension",2,"12–20",1,75],["calf-raise",3,"10–20",1,75]]}
+    ]},
+    {id:"strength4v3",name:"General Strength 4-Day",level:"Intermediate",daysPerWeek:4,goal:"Increase measurable pressing, rowing and lower-body strength while retaining enough accessory volume for balanced development.",goalTags:["strength","general"],experienceTags:["intermediate","advanced"],durationMin:75,recovery:"medium",days:[
+      {name:"Upper Strength",focus:"Heavy press / row / vertical pull",items:[["incline-smith",4,"4–6",3,210],["chest-row",4,"5–8",2,180],["lat-pulldown-neutral",3,"5–8",2,180],["machine-shoulder-press",3,"6–8",2,150],["cable-preacher",2,"8–12",2,75],["overhead-triceps",2,"8–12",2,75]]},
+      {name:"Lower Strength",focus:"Heavy knee-dominant strength / hamstrings",items:[["hack-squat",4,"4–6",3,240],["leg-press",3,"6–8",2,210],["seated-curl",3,"6–10",2,120],["calf-raise",3,"8–12",2,90],["cable-crunch",3,"8–12",2,90]]},
+      {name:"Upper Volume",focus:"Chest / back / delts / arms",items:[["incline-machine",3,"8–12",2,150],["tbar-supported",3,"8–12",2,150],["one-arm-pulldown",3,"10–15",2,90],["machine-lateral",3,"12–20",1,75],["reverse-pec-deck",3,"12–20",1,75],["bayesian-curl",2,"10–15",1,75],["pressdown",2,"10–15",1,60]]},
+      {name:"Lower Volume",focus:"Quads / hamstrings / calves",items:[["leg-press",3,"8–12",2,180],["split-squat",3,"8–12",2,120],["lying-curl",3,"10–15",1,90],["leg-extension",2,"12–18",1,75],["calf-raise",3,"10–15",1,75]]}
+    ]},
+    {id:"recomp3v3",name:"Recomposition 3-Day",level:"Beginner / intermediate",daysPerWeek:3,goal:"Preserve or build muscle with full-body sessions that are easy to recover from while bodyweight goals are managed outside the workout.",goalTags:["recomp","general","muscle"],experienceTags:["beginner","intermediate"],durationMin:60,recovery:"high",days:[
+      {name:"Full A",focus:"Whole body / moderate density",items:[["leg-press",3,"8–12",2,150],["incline-machine",3,"8–12",2,120],["lat-pulldown-neutral",3,"8–12",2,120],["machine-lateral",2,"12–20",2,60],["seated-curl",2,"10–15",2,75],["cable-crunch",2,"10–15",2,60]]},
+      {name:"Full B",focus:"Whole body / upper-back emphasis",items:[["hack-squat",3,"8–12",2,150],["chest-row",3,"8–12",2,120],["converging-press",3,"8–12",2,120],["reverse-pec-deck",2,"12–20",2,60],["cable-preacher",2,"10–15",2,60],["overhead-triceps",2,"10–15",2,60]]},
+      {name:"Full C",focus:"Whole body / unilateral + shoulders",items:[["split-squat",3,"8–12",2,120],["incline-smith",3,"6–10",2,150],["one-arm-pulldown",3,"10–15",2,90],["lying-curl",2,"10–15",2,75],["cable-lateral-behind",3,"12–20",1,60],["machine-crunch",2,"10–15",2,60]]}
+    ]},
+    {id:"advanced5v3",name:"Hypertrophy 5-Day Balanced",level:"Intermediate / advanced",daysPerWeek:5,goal:"Higher weekly muscle-building volume distributed across five sessions without turning every session into a marathon.",goalTags:["muscle"],experienceTags:["intermediate","advanced"],durationMin:70,recovery:"medium-low",days:[
+      {name:"Upper A",focus:"Chest / back / delts",items:[["incline-smith",3,"6–10",2,180],["lat-pulldown-neutral",3,"6–10",2,150],["chest-row",3,"8–12",2,150],["machine-lateral",3,"12–20",1,75],["reverse-pec-deck",2,"12–20",1,75],["overhead-triceps",2,"10–15",1,60]]},
+      {name:"Lower A",focus:"Quads / hamstrings / calves",items:[["hack-squat",3,"6–10",2,180],["seated-curl",3,"8–15",1,90],["leg-extension",3,"10–18",1,75],["calf-raise",3,"8–15",1,75],["cable-crunch",3,"8–15",1,75]]},
+      {name:"Pull + Arms",focus:"Lats / upper back / biceps / triceps",items:[["one-arm-pulldown",3,"8–15",1,90],["tbar-supported",3,"6–10",2,150],["reverse-cable",3,"12–20",1,75],["cable-preacher",3,"8–15",1,75],["overhead-triceps",3,"8–15",1,75]]},
+      {name:"Lower B",focus:"Quads / glutes / hamstrings",items:[["leg-press",3,"8–15",2,180],["split-squat",2,"8–12",2,120],["lying-curl",3,"10–15",1,90],["leg-extension",2,"12–20",1,75],["calf-raise",3,"10–20",1,75]]},
+      {name:"Upper B",focus:"Upper chest / delts / back",items:[["incline-machine",3,"8–12",2,150],["high-row",3,"8–12",2,120],["cable-lateral-behind",4,"12–20",1,75],["reverse-pec-deck",3,"12–20",1,75],["bayesian-curl",2,"10–15",1,60],["pressdown",2,"10–15",1,60]]}
+    ]}
+  ];
+  for (const t of extra) if (!D.templates.some(x=>x.id===t.id)) D.templates.push(t);
+  const meta={aesthetic6:{goalTags:["muscle"],experienceTags:["intermediate","advanced"],durationMin:80,recovery:"low"},upperlower4:{goalTags:["muscle","recomp","general"],experienceTags:["intermediate"],durationMin:70,recovery:"medium"},fullbody3:{goalTags:["muscle","general","recomp"],experienceTags:["beginner","intermediate"],durationMin:65,recovery:"high"},ppl6:{goalTags:["muscle"],experienceTags:["intermediate","advanced"],durationMin:75,recovery:"low"},aesthetic5:{goalTags:["muscle"],experienceTags:["intermediate","advanced"],durationMin:75,recovery:"medium-low"},starter3:{goalTags:["general","muscle","recomp"],experienceTags:["beginner"],durationMin:50,recovery:"high"}};
+  D.templates.forEach(t=>Object.assign(t,meta[t.id]||{}));
+  function scoreTemplate(t,p={}){let s=0;const goal=p.goal||"general",exp=p.experience||"beginner",days=Number(p.days||3);s+=t.daysPerWeek===days?38:Math.max(0,28-Math.abs(t.daysPerWeek-days)*10);s+=(t.goalTags||[]).includes(goal)?32:6;s+=(t.experienceTags||[]).includes(exp)?20:4;if(p.sessionMinutes&&t.durationMin)s+=Math.max(0,10-Math.abs(Number(p.sessionMinutes)-t.durationMin)/5);if(exp==="beginner"&&t.daysPerWeek>4)s-=25;if(days<=3&&t.daysPerWeek>=5)s-=20;return Math.round(s)}
+  function recommendations(profile){return D.templates.map(t=>({template:t,score:scoreTemplate(t,profile)})).sort((a,b)=>b.score-a.score)}
+  window.FORM_PROGRAMS={recommendations,scoreTemplate};
+})();
