@@ -1,0 +1,12 @@
+.git
+.github
+supabase
+VERA_OneDay_Colab.ipynb
+README.md
+CHANGELOG.md
+RELEASE_NOTES.md
+SECURITY.md
+CITATION.cff
+LICENSE
+Dockerfile
+*.sql
