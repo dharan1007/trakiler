@@ -37,8 +37,8 @@ jobs:
           grep -q 'alter table public.form_measurements enable row level security' supabase/schema.sql
           grep -q 'club_public boolean not null default false' supabase/schema.sql
           grep -q 'form_public_daily_leaderboard' supabase/schema.sql
-          if grep -R --exclude-dir=.git -E 'SUPABASE_SERVICE_ROLE_KEY[[:space:]]*[:=][[:space:]]*["'"''][A-Za-z0-9._-]+' . --include='*.js' --include='*.html'; then
-            echo 'A server credential appears to be embedded in browser code.'
+          if grep -n 'SUPABASE_SERVICE_ROLE_KEY' ./*.js ./*.html 2>/dev/null; then
+            echo 'A service-role credential name must never appear in browser-delivered assets.'
             exit 1
           fi
       - name: Verify no missing local assets referenced by index
