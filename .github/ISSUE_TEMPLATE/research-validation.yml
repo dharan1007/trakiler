@@ -1,0 +1,65 @@
+name: Research / validation feedback
+description: Challenge a FORM metric, heuristic, ranking, assumption or scientific interpretation with evidence.
+title: "[Research]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        FORM welcomes evidence-based criticism. Please distinguish a software defect from a scientific-validity concern. Primary research sources are preferred where available.
+  - type: input
+    id: component
+    attributes:
+      label: Metric / rule / feature being questioned
+      placeholder: e1RM estimate, RIR interpretation, workload proxy, readiness, exercise score, plateau flag...
+    validations:
+      required: true
+  - type: dropdown
+    id: concern
+    attributes:
+      label: Concern type
+      options:
+        - Scientific validity
+        - Measurement reliability
+        - Population/generalizability
+        - Safety framing
+        - Bias / fairness
+        - Terminology / interpretation
+        - Evidence quality
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: claim
+    attributes:
+      label: What exactly is the concern?
+      description: State the proposition you believe is incorrect, overstated, underspecified or misleading.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: DOI, PubMed record, journal citation, preprint, standards document or other primary source; explain the relevance.
+      placeholder: "Citation / DOI / URL + why it matters"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Population / context
+      description: Identify the lifter population, exercise, load range, training status or context where the concern applies.
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Suggested correction or test
+      description: How should the wording, calculation, validation experiment or product behavior change?
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I am not submitting private medical records or other sensitive personal data.
+          required: true
+        - label: I understand FORM currently makes no project-wide clinical-accuracy claim.
+          required: true
