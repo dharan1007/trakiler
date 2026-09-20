@@ -1,0 +1,169 @@
+name: iBot Gas Native Android Verification
+
+on:
+  push:
+    branches:
+      - android-runner-smoke-20260920
+    paths:
+      - "ibot-gas/**"
+      - ".github/workflows/ibot-gas-android.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Install Android SDK 35
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      - name: Compile native APK
+        working-directory: ibot-gas
+        shell: bash
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+
+      - name: Prepare evidence
+        shell: bash
+        run: mkdir -p ibot-gas/test-output
+
+      - name: Boot Android 15 emulator and verify app
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            APK="ibot-gas/app/build/outputs/apk/debug/app-debug.apk"
+            OUTDIR="ibot-gas/test-output"
+
+            adb install -r "$APK"
+            adb logcat -c
+
+            for i in 1 2 3 4 5; do
+              adb shell am force-stop com.ibot.gasconsumer || true
+              sleep 1
+              OUT="$(adb shell am start -W -n com.ibot.gasconsumer/.MainActivity)"
+              printf "%s\n" "$OUT" | tee "$OUTDIR/launch-$i.txt"
+              printf "%s\n" "$OUT" | grep -q "Status: ok"
+              sleep 2
+              PID="$(adb shell pidof com.ibot.gasconsumer | tr -d '\r')"
+              test -n "$PID"
+            done
+
+            adb exec-out screencap -p > "$OUTDIR/01-launch.png"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/01-launch.xml" >/dev/null
+            grep -q "Balance is low" "$OUTDIR/01-launch.xml"
+            grep -q "Recharge now" "$OUTDIR/01-launch.xml"
+
+            python3 ibot-gas/scripts/tap_text.py "Later"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/02-home.xml" >/dev/null
+            grep -q "Good afternoon" "$OUTDIR/02-home.xml"
+            grep -q "Recharge balance" "$OUTDIR/02-home.xml"
+            grep -q "Meter status" "$OUTDIR/02-home.xml"
+            adb exec-out screencap -p > "$OUTDIR/02-home.png"
+
+            python3 ibot-gas/scripts/tap_text.py "Usage"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/03-usage.xml" >/dev/null
+            grep -q "Consumption and estimated spend" "$OUTDIR/03-usage.xml"
+            adb exec-out screencap -p > "$OUTDIR/03-usage.png"
+
+            python3 ibot-gas/scripts/tap_text.py "Alerts"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/04-alerts.xml" >/dev/null
+            grep -q "Safety, balance and meter events" "$OUTDIR/04-alerts.xml"
+            adb exec-out screencap -p > "$OUTDIR/04-alerts.png"
+
+            python3 ibot-gas/scripts/tap_text.py "More"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/05-more.xml" >/dev/null
+            grep -q "Simulation scenario" "$OUTDIR/05-more.xml"
+            grep -q "Notifications" "$OUTDIR/05-more.xml"
+            adb exec-out screencap -p > "$OUTDIR/05-more.png"
+
+            python3 ibot-gas/scripts/tap_text.py "Tamper"
+            python3 ibot-gas/scripts/tap_text.py "Home"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/06-tamper.xml" >/dev/null
+            grep -q "Tamper detected" "$OUTDIR/06-tamper.xml"
+            adb exec-out screencap -p > "$OUTDIR/06-tamper.png"
+
+            python3 ibot-gas/scripts/tap_text.py "Alerts"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/07-tamper-alerts.xml" >/dev/null
+            grep -q "Tamper detected" "$OUTDIR/07-tamper-alerts.xml"
+
+            python3 ibot-gas/scripts/tap_text.py "More"
+            adb shell input swipe 900 1050 250 1050 400 || true
+            sleep 1
+            python3 ibot-gas/scripts/tap_text.py "Offline"
+            python3 ibot-gas/scripts/tap_text.py "Home"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/08-offline.xml" >/dev/null
+            grep -q "Meter communication delayed" "$OUTDIR/08-offline.xml"
+            adb exec-out screencap -p > "$OUTDIR/08-offline.png"
+
+            python3 ibot-gas/scripts/tap_text.py "More"
+            python3 ibot-gas/scripts/tap_text.py "Low balance"
+            sleep 1
+            python3 ibot-gas/scripts/tap_text.py "Later"
+            python3 ibot-gas/scripts/tap_text.py "Home"
+            python3 ibot-gas/scripts/tap_text.py "Recharge balance"
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/09-recharge.xml" >/dev/null
+            grep -q "Continue" "$OUTDIR/09-recharge.xml"
+            adb exec-out screencap -p > "$OUTDIR/09-recharge.png"
+
+            python3 ibot-gas/scripts/tap_text.py "₹250"
+            python3 ibot-gas/scripts/tap_text.py "Continue"
+            sleep 1
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null
+            adb pull /sdcard/window.xml "$OUTDIR/10-post-recharge.xml" >/dev/null
+            grep -q "ACTIVE" "$OUTDIR/10-post-recharge.xml"
+            adb exec-out screencap -p > "$OUTDIR/10-post-recharge.png"
+
+            adb shell input keyevent KEYCODE_HOME
+            sleep 2
+            adb shell am start -W -n com.ibot.gasconsumer/.MainActivity | tee "$OUTDIR/resume.txt"
+            sleep 2
+            test -n "$(adb shell pidof com.ibot.gasconsumer | tr -d '\r')"
+
+            adb logcat -d > "$OUTDIR/logcat.txt"
+            if grep -E "FATAL EXCEPTION|ANR in com\.ibot\.gasconsumer|Process: com\.ibot\.gasconsumer.*has died" "$OUTDIR/logcat.txt"; then
+              echo "Crash or ANR detected"
+              exit 1
+            fi
+
+      - name: Upload tested APK and device evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ibot-gas-android15-tested
+          path: |
+            ibot-gas/app/build/outputs/apk/debug/app-debug.apk
+            ibot-gas/test-output
+          if-no-files-found: warn
+          retention-days: 7
